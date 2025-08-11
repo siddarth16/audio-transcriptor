@@ -1,0 +1,117 @@
+TITLE
+Build an Audio Transcriptor Web App — 100% Vercel-Only (No Local Running) — Fully Autonomous Delivery
+
+ROLE & OPERATING MODE
+You are an autonomous senior platform + product engineer inside Claude Code. You will design, implement, test, document, and ship a production-ready repository that I can push to GitHub and deploy on Vercel. DO NOT require or assume any local development or local running. Everything must build and run exclusively on Vercel (Preview/Production deployments).
+
+NON‑NEGOTIABLE CONSTRAINTS (READ CAREFULLY)
+- No local dev: I will not run `npm run dev`, Docker, or any local tools. All verification must be possible via:
+  1) GitHub (source, CI checks), and
+  2) Vercel Preview URLs (feature branches/PRs) and Production URL.
+- Choose the stack yourself, but it MUST be compatible with Vercel serverless/edge runtimes and their limits (execution time, memory, cold starts). If background work is required, design a Vercel-compatible approach (e.g., queue + polling, webhooks, or edge-friendly streaming).
+- No persistent server disk. If temporary object storage is needed, use a Vercel-compatible option (e.g., Vercel Blob or a pluggable S3-compatible bucket). Document TTL and deletion.
+- No secrets in repo. All keys via env vars, set only in Vercel UI. Provide `.env.example` only as reference.
+- Provide at least TWO transcription backends behind a clean interface: one cloud API provider; and one alternative (e.g., edge/worker/WebAssembly, or a second cloud provider). Default to a sensible choice that runs reliably on Vercel. Do not rely on local GPU/CPU tooling.
+- Client-first for small files (recording, upload, simple pre-processing in-browser). For large files, switch to serverless/edge workflow that respects Vercel limits.
+- Security: strict MIME/type/size validation; rate limiting on any server routes; CSRF/CORS safe defaults; sanitize filenames; never persist user audio beyond what is required to complete the transcription job.
+- Accessibility: keyboard navigation, focus states, ARIA, high-contrast dark theme (you choose exact style).
+
+PRODUCT REQUIREMENTS
+Record & Upload
+- In-browser recording with pause/resume, input device selection, and a simple waveform visualization.
+- Drag-and-drop + file picker upload. Chunked/resumable uploads for large files with progress indicators and ability to resume after network loss.
+- Optional light-weight preprocessing (normalize/denoise) only if feasible in-browser or edge—never require native binaries.
+
+Transcription Pipeline
+- Language auto-detect with manual override. Display detected language.
+- Segment timestamps; per-word timestamps if backend supports it.
+- Confidence scores and a “quality meter” per file.
+- Optional translation to English toggle.
+- Optional speaker diarization toggle (make support explicit in UI). If not supported by the selected backend, keep the toggle disabled with a tooltip.
+- Robust retry & exponential backoff for transient errors.
+- Clear error messages and actionable recovery (retry, requeue).
+
+Editing & Review
+- Transcript editor with:
+  - Segment list (start/end timestamps, text).
+  - Edits propagate to SRT/VTT.
+  - Merge/split segments; nudge timestamps; search & replace.
+  - Audio playback with segment (or word) highlighting.
+  - Keyboard shortcuts (play/pause, prev/next segment, insert timestamp).
+- Exports: TXT, SRT, VTT, JSON (rich structure). Include filename + language in metadata.
+
+Multi-file Queue
+- Allow multiple jobs; show status: queued → processing → editing → done/failed.
+- Cancel job; show progress; handle retries; preserve state client-side (IndexedDB) without server persistence.
+
+Settings
+- Backend selection (at least two). Defaults to a reliable provider that works within Vercel limits.
+- Presets for speed/quality/cost if applicable.
+- File size limits and chunk configuration.
+- Toggles: translation, diarization.
+- Theme (default dark). Accent color options.
+
+ARCHITECTURE & DEPLOYMENT (VERCEL-ONLY)
+- Choose framework/runtime yourself—must run on Vercel. Use serverless/edge route handlers as needed. If using WASM, ensure proper bundling for Vercel.
+- Absolutely no step requires local execution. All testing and QA happen via CI + Vercel Preview deployments.
+- Provide `vercel.json` only if needed (routes/headers/envs). Ensure zero manual rewiring after import.
+- If using queues or long-running tasks, design a pull-based client poller or provider webhooks hitting Vercel routes. No stateful servers or background daemons.
+- Implement a clean `TranscriptionService` interface (e.g., `transcribe()`, `supportsWordTimestamps()`, `supportsDiarization()`, `translate()`) with two concrete adapters (cloud provider A, edge/WASM or cloud provider B).
+
+REPOSITORY DELIVERABLES
+- Complete, production-ready repo.
+- README.md that includes:
+  1) App overview + diagrams (upload/record → chunk → transcribe → edit → export).
+  2) The chosen stack and why it fits Vercel-only constraints.
+  3) Environment variables reference with `.env.example` (no real keys).
+  4) EXACT deployment steps: “Push to GitHub → Import into Vercel → Add env vars → Click Deploy”. No local commands.
+  5) How to verify via Vercel Preview URLs and what tests run in CI.
+  6) Privacy/Security notes; what is processed client vs server; retention policy.
+  7) Backend switching guide (capabilities table: word timestamps, diarization, translation, speed/cost notes).
+  8) Troubleshooting on Vercel (timeouts, memory, payload too large, cold starts).
+  9) Roadmap: batch export, subtitle burn-in, glossary/hotwords, custom vocabularies, multi-track, SSO, quotas.
+- `.github/workflows/ci.yml` with lint, type-check, and tests (run in CI only).
+- MIT LICENSE.
+- Public small audio samples for demo.
+- At least 12 tests (unit+integration). If you add e2e, make it run headless in CI; do NOT require local runners.
+
+TESTING & QUALITY (CI + PREVIEW-ONLY)
+- Unit test: chunker/resume logic, timestamp utilities, subtitle serializers, backend adapters (mock providers).
+- Integration test: upload → mocked transcribe → export SRT/VTT/TXT.
+- Optional e2e: CI-run against a Preview build URL if feasible (document how). No local runners.
+- All checks must pass in GitHub CI. No flaky tests that rely on local hardware.
+
+OBSERVABILITY & DX
+- Structured server logs with request IDs; redacted sensitive data. Make logs findable in Vercel.
+- Centralized error boundary and non-blocking toasts for user-facing errors.
+- Feature flags for experimental backends or diarization/translation.
+- NPM scripts only for CI stages (build, lint, typecheck, test). They will run in CI/Vercel, not locally.
+
+SECURITY & PRIVACY
+- Never persist audio beyond processing; if temporary storage is needed (e.g., Vercel Blob or S3-compatible), set TTL and proactively delete after job complete.
+- Default to “no remote processing” unless a backend with valid key is selected in Settings. Make behavior explicit in UI & README.
+- Validate MIME/size; sanitize filenames; apply rate limiting. Safe CORS/CSRF defaults.
+- No analytics by default; expose a hook to add one later.
+
+ACCEPTANCE CRITERIA
+- Deployed app on Vercel works without any local steps.
+- Recording and upload work via the browser; large-file uploads are resumable.
+- Transcription works using the default backend; timestamps present. Exports (SRT, VTT, TXT, JSON) work.
+- Optional translation and diarization are available (feature-flag OK); clear capability messaging.
+- Multi-file queue and progress UI work. Cancel/retry behave correctly.
+- Mobile usable; desktop excellent.
+- CI is green on GitHub. No local execution needed for any part of the workflow.
+
+TASKS (DO THIS IN ORDER)
+A. Plan & scaffold the repo with Vercel-only assumptions. Add license, editorconfig, CI (lint/type/test). Include minimal sample audio.
+B. Build shell UI (dark theme), navigation, settings, and pluggable `TranscriptionService` interface.
+C. Implement recording component; uploader with chunked/resumable logic, progress bars, and resume after network interruption.
+D. Implement at least two backends: choose providers/edge/WASM that are reliable on Vercel. Add language detection and optional translation; diarization toggle if supported.
+E. Build transcript editor with playback sync, segment list, edits, and exporters (TXT, SRT, VTT, JSON).
+F. Implement multi-file queueing, cancel/retry, clear user feedback.
+G. Harden: validation, rate limits, privacy copy, feature flags, error boundaries.
+H. Write README with Vercel-only deploy + verification steps; add architecture diagrams.
+I. Ensure CI is green; open PR to show Preview deployment output; present final file tree and deployment checklist.
+
+NOW
+Start building the repository from scratch, generate the code, and prepare the README and CI. When finished, output the full file tree and the exact steps I need to import to Vercel and set env vars—no local commands.
