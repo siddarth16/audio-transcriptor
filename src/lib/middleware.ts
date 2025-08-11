@@ -69,11 +69,17 @@ export class RateLimiter {
 
   cleanup(): void {
     const now = Date.now()
-    for (const [key, record] of this.cache) {
+    const keysToDelete: string[] = []
+    
+    this.cache.forEach((record, key) => {
       if (now > record.resetTime) {
-        this.cache.delete(key)
+        keysToDelete.push(key)
       }
-    }
+    })
+    
+    keysToDelete.forEach(key => {
+      this.cache.delete(key)
+    })
   }
 }
 
