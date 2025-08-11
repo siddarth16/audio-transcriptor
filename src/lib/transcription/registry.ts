@@ -9,14 +9,29 @@ function registerBackend(id: string, factory: () => TranscriptionBackend) {
   backends.set(id, factory)
 }
 
-// Register available backends
-if (process.env.OPENAI_API_KEY) {
-  registerBackend('whisper', () => new WhisperTranscriptionService())
+// Register available backends (deferred to avoid build-time errors)
+function initializeBackends() {
+  if (typeof window === 'undefined') { // Server-side only
+    if (process.env.OPENAI_API_KEY) {
+      try {
+        registerBackend('whisper', () => new WhisperTranscriptionService())
+      } catch (error) {
+        console.warn('Failed to register Whisper backend:', error)
+      }
+    }
+
+    if (process.env.ASSEMBLYAI_API_KEY) {
+      try {
+        registerBackend('assemblyai', () => new AssemblyAITranscriptionService())
+      } catch (error) {
+        console.warn('Failed to register AssemblyAI backend:', error)
+      }
+    }
+  }
 }
 
-if (process.env.ASSEMBLYAI_API_KEY) {
-  registerBackend('assemblyai', () => new AssemblyAITranscriptionService())
-}
+// Initialize backends
+initializeBackends()
 
 export function getAvailableBackends(): TranscriptionBackend[] {
   const flags = getFeatureFlags()
@@ -26,7 +41,9 @@ export function getAvailableBackends(): TranscriptionBackend[] {
     try {
       availableBackends.push(backends.get('whisper')!())
     } catch (error) {
-      console.warn('Whisper backend not available:', error)
+      if (typeof window === 'undefined') {
+        console.warn('Whisper backend not available:', error)
+      }
     }
   }
 
@@ -34,7 +51,9 @@ export function getAvailableBackends(): TranscriptionBackend[] {
     try {
       availableBackends.push(backends.get('assemblyai')!())
     } catch (error) {
-      console.warn('AssemblyAI backend not available:', error)
+      if (typeof window === 'undefined') {
+        console.warn('AssemblyAI backend not available:', error)
+      }
     }
   }
 
