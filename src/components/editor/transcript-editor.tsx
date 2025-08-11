@@ -147,7 +147,7 @@ export function TranscriptEditor({ job }: TranscriptEditorProps) {
             segments={result.segments}
             currentTime={currentTime}
             onSeek={(time) => setCurrentTime(time)}
-            onEdit={(segmentId, newText) => {
+            onEdit={(_segmentId, _newText) => {
               // Implement segment editing
               toast.info('Edit saved', 'Segment text has been updated')
             }}

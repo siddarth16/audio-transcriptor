@@ -9,8 +9,8 @@ import { clsx } from 'clsx'
 interface SegmentListProps {
   segments: TranscriptionSegment[]
   currentTime: number
-  onSeek: (time: number) => void
-  onEdit: (segmentId: string, newText: string) => void
+  onSeek: (_time: number) => void
+  onEdit: (_segmentId: string, _newText: string) => void
 }
 
 export function SegmentList({ segments, currentTime, onSeek, onEdit }: SegmentListProps) {
@@ -41,7 +41,7 @@ export function SegmentList({ segments, currentTime, onSeek, onEdit }: SegmentLi
 
   return (
     <div className="space-y-3 max-h-96 overflow-auto scrollbar-thin">
-      {segments.map((segment, index) => {
+      {segments.map((segment, _index) => {
         const isActive = currentTime >= segment.startTime && currentTime <= segment.endTime
         const isEditing = editingSegment === segment.id
 

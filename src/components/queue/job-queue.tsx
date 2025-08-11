@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Trash2, RotateCcw, Eye } from 'lucide-react'
+import { Trash2, Eye } from 'lucide-react'
 import { useAppStore } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'
 import { JobCard } from './job-card'

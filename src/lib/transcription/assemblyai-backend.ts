@@ -50,7 +50,7 @@ export class AssemblyAITranscriptionService extends BaseTranscriptionService {
 
       // Configure transcription parameters
       const params: any = {
-        audio_url: uploadResponse.upload_url,
+        audio_url: uploadResponse,
         language_detection: settings.language === 'auto',
         word_boost: [],
         boost_param: 'low'

@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Download, X, FileText, Clock, Users, BarChart3 } from 'lucide-react'
+import { Download, X, FileText, Clock, BarChart3 } from 'lucide-react'
 import { TranscriptionJob, ExportFormat } from '@/types'
 import { clsx } from 'clsx'
 
 interface ExportOptionsProps {
   job: TranscriptionJob
-  onExport: (format: ExportFormat, options: any) => void
+  onExport: (_format: ExportFormat, _options: any) => void
   onClose: () => void
 }
 

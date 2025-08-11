@@ -52,7 +52,7 @@ export function UploadInterface() {
     }
   }, [settings, addJob, toast])
 
-  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, isDragAccept } = useDropzone({
     onDrop: handleFileUpload,
     accept: {
       'audio/*': ['.mp3', '.wav', '.m4a', '.webm', '.ogg', '.flac', '.aac', '.mp4']
