@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useRef, useCallback } from 'react'
-import { Mic, Square, Play, Pause, Trash2, Download, Upload } from 'lucide-react'
+import React, { useState, useCallback } from 'react'
+import { Download, Upload } from 'lucide-react'
 import { useAudioRecorder } from '@/hooks/use-audio-recorder'
 import { useAppStore } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'

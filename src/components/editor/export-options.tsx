@@ -221,19 +221,19 @@ export function ExportOptions({ job, onExport, onClose }: ExportOptionsProps) {
                   {selectedFormat === 'srt' && (
                     <div>
                       1<br/>
-                      00:00:00,000 --> 00:00:05,000<br/>
+                      00:00:00,000 --&gt; 00:00:05,000<br/>
                       {result.segments[0]?.text || 'Sample text'}<br/><br/>
                       2<br/>
-                      00:00:05,000 --> 00:00:10,000<br/>
+                      00:00:05,000 --&gt; 00:00:10,000<br/>
                       {result.segments[1]?.text || 'More sample text'}
                     </div>
                   )}
                   {selectedFormat === 'vtt' && (
                     <div>
                       WEBVTT<br/><br/>
-                      00:00.000 --> 00:05.000<br/>
+                      00:00.000 --&gt; 00:05.000<br/>
                       {result.segments[0]?.text || 'Sample text'}<br/><br/>
-                      00:05.000 --> 00:10.000<br/>
+                      00:05.000 --&gt; 00:10.000<br/>
                       {result.segments[1]?.text || 'More sample text'}
                     </div>
                   )}

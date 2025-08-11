@@ -13,7 +13,7 @@ import { UploadProgress } from './upload-progress'
 export function UploadInterface() {
   const { addJob, settings } = useAppStore()
   const { toast } = useToast()
-  const [uploadingFiles, setUploadingFiles] = useState<Map<string, { progress: number, total: number }>>(new Map())
+  const [uploadingFiles] = useState<Map<string, { progress: number, total: number }>>(new Map())
 
   const handleFileUpload = useCallback(async (files: File[]) => {
     for (const file of files) {

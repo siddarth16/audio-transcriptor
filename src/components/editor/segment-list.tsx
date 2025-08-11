@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Play, Edit2, Clock, User } from 'lucide-react'
+import { Play, Edit2, User } from 'lucide-react'
 import { TranscriptionSegment } from '@/types'
-import { formatDuration } from '@/lib/job-utils'
+// import { formatDuration } from '@/lib/job-utils'
 import { clsx } from 'clsx'
 
 interface SegmentListProps {

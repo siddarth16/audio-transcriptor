@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ArrowLeft, Download, Play, Pause, Edit } from 'lucide-react'
+import { ArrowLeft, Download, Edit } from 'lucide-react'
 import { TranscriptionJob } from '@/types'
 import { useAppStore } from '@/lib/store'
 import { useToast } from '@/hooks/use-toast'
@@ -16,7 +16,6 @@ interface TranscriptEditorProps {
 export function TranscriptEditor({ job }: TranscriptEditorProps) {
   const { setActiveJob } = useAppStore()
   const { toast } = useToast()
-  const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [showExportOptions, setShowExportOptions] = useState(false)
 

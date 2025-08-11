@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { FileAudio, List, Settings, Home } from 'lucide-react'
+import { FileAudio, List, Settings } from 'lucide-react'
 import { useAppStore } from '@/lib/store'
 import { clsx } from 'clsx'
 
