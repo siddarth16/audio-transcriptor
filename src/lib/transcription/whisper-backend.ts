@@ -52,8 +52,7 @@ export class WhisperTranscriptionService extends BaseTranscriptionService {
       const transcriptionParams: any = {
         file,
         model: 'whisper-1',
-        response_format: 'verbose_json',
-        timestamp_granularities: settings.enableWordTimestamps ? ['word', 'segment'] : ['segment']
+        response_format: 'verbose_json'
       }
 
       // Set language if not auto-detect
@@ -69,8 +68,7 @@ export class WhisperTranscriptionService extends BaseTranscriptionService {
         response = await this.client.audio.translations.create({
           file,
           model: 'whisper-1',
-          response_format: 'verbose_json',
-          timestamp_granularities: settings.enableWordTimestamps ? ['word', 'segment'] : ['segment']
+          response_format: 'verbose_json'
         })
       } else {
         response = await this.client.audio.transcriptions.create(transcriptionParams)
